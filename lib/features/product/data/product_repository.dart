@@ -5,7 +5,10 @@ import 'package:http/http.dart' as http;
 import '../models/product.dart';
 
 abstract class ProductRepository {
-  Future<List<Product>> fetchProducts();
+  Future<List<Product>> fetchProducts({int limit = 30, int skip = 0});
+  Future<List<String>> fetchCategories();
+  Future<List<Product>> fetchProductsByCategory(String category);
+  Future<List<Product>> searchProducts(String query);
   Future<Product> fetchProduct(int id);
   Future<Product> addProduct(Product product);
   Future<Product> updateProduct(int id, Product product);
@@ -16,13 +19,46 @@ class ProductRepositoryImpl implements ProductRepository {
   final String baseUrl = 'https://dummyjson.com';
 
   @override
-  Future<List<Product>> fetchProducts() async {
-    final response = await http.get(Uri.parse('$baseUrl/products'));
+  Future<List<Product>> fetchProducts({int limit = 30, int skip = 0}) async {
+    final response = await http.get(Uri.parse('$baseUrl/products?limit=$limit&skip=$skip'));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       return (data['products'] as List).map((json) => Product.fromJson(json)).toList();
     } else {
       throw Exception('Failed to load products');
+    }
+  }
+
+  @override
+  Future<List<String>> fetchCategories() async {
+    final response = await http.get(Uri.parse('$baseUrl/products/category-list'));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return List<String>.from(data);
+    } else {
+      throw Exception('Failed to load categories');
+    }
+  }
+
+  @override
+  Future<List<Product>> fetchProductsByCategory(String category) async {
+    final response = await http.get(Uri.parse('$baseUrl/products/category/$category'));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return (data['products'] as List).map((json) => Product.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load products by category');
+    }
+  }
+
+  @override
+  Future<List<Product>> searchProducts(String query) async {
+    final response = await http.get(Uri.parse('$baseUrl/products/search?q=$query'));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return (data['products'] as List).map((json) => Product.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to search products');
     }
   }
 

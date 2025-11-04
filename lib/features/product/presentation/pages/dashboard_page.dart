@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../blocs/product_cubit.dart';
 import '../widgets/app_bar.dart';
 import '../widgets/product_list.dart';
 import '../widgets/sidebar.dart';

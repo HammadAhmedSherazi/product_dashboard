@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../blocs/theme_cubit.dart';
 import '../widgets/app_bar.dart';
 import '../widgets/sidebar.dart';
 
@@ -27,7 +29,21 @@ class SettingsPage extends StatelessWidget {
                         style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 16),
-                      const Text('Settings page content goes here.'),
+                      BlocBuilder<ThemeCubit, ThemeMode>(
+                        builder: (context, themeMode) {
+                          final isDarkMode = themeMode == ThemeMode.dark;
+                          return SwitchListTile(
+                            title: const Text('Dark Mode'),
+                            subtitle: Text(themeMode == ThemeMode.system ? 'System' : ''),
+                            value: isDarkMode,
+                            onChanged: (value) {
+                              context.read<ThemeCubit>().setThemeMode(
+                                value ? ThemeMode.dark : ThemeMode.light,
+                              );
+                            },
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ),

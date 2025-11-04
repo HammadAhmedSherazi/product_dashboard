@@ -6,6 +6,7 @@ class Product {
   final String category;
   final String thumbnail;
   final List<String> images;
+  final bool isInStock;
 
   Product({
     required this.id,
@@ -15,6 +16,7 @@ class Product {
     required this.category,
     required this.thumbnail,
     required this.images,
+    required this.isInStock,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class Product {
       category: json['category'],
       thumbnail: json['thumbnail'],
       images: List<String>.from(json['images']),
+      isInStock: json['stock'] > 0, // Simulate stock status
     );
   }
 
@@ -38,6 +41,7 @@ class Product {
       'category': category,
       'thumbnail': thumbnail,
       'images': images,
+      'stock': isInStock ? 10 : 0, // Simulate stock for API
     };
   }
 }
