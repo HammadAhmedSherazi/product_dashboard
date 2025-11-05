@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => ProductCubit(
             ProductUseCase(ProductRepositoryImpl()),
-          )..fetchProducts(),
+          )..fetchProducts()..fetchCategories(),
         ),
         BlocProvider(
           create: (context) => ThemeCubit(),

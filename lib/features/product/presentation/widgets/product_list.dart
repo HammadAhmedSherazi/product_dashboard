@@ -53,7 +53,7 @@ class _ProductListState extends State<ProductList> {
         if (state.getProductResponse?.status == ApiStatus.loading) {
           return const Center(child: CircularProgressIndicator());
         } else if (state.products.isNotEmpty) {
-          final categories = state.products.map((p) => p.category).toSet().toList();
+          final categories = state.getCategoriesResponse!.data == null || state.getCategoriesResponse!.data!.isEmpty? state.products.map((p) => p.category).toSet().toList(): state.getCategoriesResponse!.data ?? [];
           return Column(
             children: [
               // Search and Filter Row
