@@ -118,7 +118,7 @@ lib/
 - Widget tests for UI components
 - Integration tests for complete flows
 
-## Deployment with Firebase Hostin
+## Deployment with Firebase Hosting
     Project Live URL : `https://producttestproject.web.app`
 
 
