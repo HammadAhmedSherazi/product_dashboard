@@ -118,3 +118,49 @@ lib/
 - Widget tests for UI components
 - Integration tests for complete flows
 
+## Deployment
+
+### Web Deployment with Firebase Hosting
+1. Install Firebase CLI:
+   ```bash
+   npm install -g firebase-tools
+   ```
+
+2. Login to Firebase:
+   ```bash
+   firebase login
+   ```
+
+3. Initialize Firebase in your project:
+   ```bash
+   firebase init
+   ```
+   - Select "Hosting" when prompted
+   - Choose your Firebase project
+   - Set public directory to `build/web`
+   - Configure as a single-page app: Yes
+
+4. Build the Flutter web app:
+   ```bash
+   flutter build web
+   ```
+
+5. Deploy to Firebase:
+   ```bash
+   firebase deploy
+   ```
+
+Your app will be live at: `https://your-project-id.web.app`
+
+### Mobile Deployment
+- **Android**: Build APK with `flutter build apk` or use Android Studio
+- **iOS**: Build IPA with `flutter build ios` or use Xcode
+
+### CI/CD
+- Ready for GitHub Actions integration
+- Automated testing and deployment pipelines can be set up
+
+---
+
+Built with ❤️ using Flutter
+
