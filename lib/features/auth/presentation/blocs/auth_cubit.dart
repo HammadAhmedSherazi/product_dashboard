@@ -21,6 +21,7 @@ class AuthCubit extends Cubit<AuthState> {
     // Mock authentication
     if (username == 'admin' && password == 'password') {
       final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('username', username);
       await prefs.setBool('isLoggedIn', true);
       emit(state.copyWith(status: AuthStatus.authenticated));
     } else {
@@ -33,6 +34,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('username');
     await prefs.setBool('isLoggedIn', false);
     emit(state.copyWith(status: AuthStatus.unauthenticated));
   }

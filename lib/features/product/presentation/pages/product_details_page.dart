@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../models/product.dart';
 import '../blocs/product_cubit.dart';
@@ -49,12 +51,32 @@ class ProductDetailsPage extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     // Product Image
-                                    Center(
-                                      child: Image.network(
-                                        product.thumbnail,
-                                        height: 200,
-                                        fit: BoxFit.cover,
-                                      ),
+                                    Row(mainAxisAlignment: MainAxisAlignment.center,
+
+                                      children: [
+                                        CachedNetworkImage(
+                                          imageUrl: product.thumbnail,
+                                          height: 200,
+                                          fit: BoxFit.cover,
+                                          placeholder: (context, url) => Shimmer.fromColors(
+                                            baseColor: Colors.grey[300]!,
+                                            highlightColor: Colors.grey[100]!,
+                                            child: Container(
+                                              height: 200,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          errorWidget: (context, url, error) => Container(
+                                            height: 200,
+                                            color: Colors.grey[300],
+                                            child: const Icon(
+                                              Icons.image_not_supported,
+                                              size: 50,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                     const SizedBox(height: 16),
                                     // Product Info
@@ -107,9 +129,24 @@ class ProductDetailsPage extends StatelessWidget {
                                             return Container(
                                               margin: const EdgeInsets.only(right: 8),
                                               width: 100,
-                                              child: Image.network(
-                                                product.images[index],
+                                              child: CachedNetworkImage(
+                                                imageUrl: product.images[index],
                                                 fit: BoxFit.cover,
+                                                placeholder: (context, url) => Shimmer.fromColors(
+                                                  baseColor: Colors.grey[300]!,
+                                                  highlightColor: Colors.grey[100]!,
+                                                  child: Container(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                errorWidget: (context, url, error) => Container(
+                                                  color: Colors.grey[300],
+                                                  child: const Icon(
+                                                    Icons.image_not_supported,
+                                                    size: 30,
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
                                               ),
                                             );
                                           },

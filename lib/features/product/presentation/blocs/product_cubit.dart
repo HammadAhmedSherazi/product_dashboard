@@ -27,10 +27,23 @@ class ProductCubit extends Cubit<ProductState> {
       );
       emit(updatedState);
     } catch (e) {
-      final errorState = state.copyWith(
-        getProductResponse: ApiResponse(status: ApiStatus.error, error: e.toString()),
-      );
-      emit(errorState);
+      // Retry logic: wait 2 seconds and try again
+      await Future.delayed(const Duration(seconds: 2));
+      try {
+        final products = await useCase.getProducts(limit: limit, skip: skip, sortBy: state.sortField, order: state.sortAscending ? 'asc' : 'desc');
+        _allProducts = skip == 0 ? products : [..._allProducts, ...products];
+        final updatedState = state.copyWith(
+          products: skip == 0 ? products : [...state.products, ...products],
+          getProductResponse: ApiResponse(status: ApiStatus.success, data: products),
+          skip: products.length >= limit ? skip + limit : 0,
+        );
+        emit(updatedState);
+      } catch (e2) {
+        final errorState = state.copyWith(
+          getProductResponse: ApiResponse(status: skip>0?ApiStatus.success : ApiStatus.error, error: e2.toString()),
+        );
+        emit(errorState);
+      }
     }
   }
 
