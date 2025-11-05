@@ -119,7 +119,7 @@ lib/
 - Integration tests for complete flows
 
 ## Deployment with Firebase Hosting
-    Project Live URL : `https://producttestproject.web.app`
+    Project Live URL : https://producttestproject.web.app
 
 
 
