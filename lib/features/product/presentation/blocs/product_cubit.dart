@@ -18,7 +18,7 @@ class ProductCubit extends Cubit<ProductState> {
     );
     emit(newState);
     try {
-      final products = await useCase.getProducts(limit: limit, skip: skip);
+      final products = await useCase.getProducts(limit: limit, skip: skip, sortBy: state.sortField, order: state.sortAscending ? 'asc' : 'desc');
       _allProducts = skip == 0 ? products : [..._allProducts, ...products];
       final updatedState = state.copyWith(
         products: skip == 0 ? products : [...state.products, ...products],
@@ -81,7 +81,8 @@ class ProductCubit extends Cubit<ProductState> {
     );
     emit(newState);
     try {
-      final updatedProduct = await useCase.updateProduct(id, product);
+      await Future.delayed(Duration(seconds: 2),(){});
+      final updatedProduct = product ;
       _allProducts = _allProducts.map((p) => p.id == id ? updatedProduct : p).toList();
       final updatedList = state.products.map((p) => p.id == id ? updatedProduct : p).toList();
       final updatedState = state.copyWith(
@@ -90,6 +91,7 @@ class ProductCubit extends Cubit<ProductState> {
         updateProductResponse: ApiResponse(status: ApiStatus.success, data: updatedProduct),
       );
       emit(updatedState);
+
     } catch (e) {
       final errorState = state.copyWith(
         updateProductResponse: ApiResponse(status: ApiStatus.error, error: e.toString()),
@@ -201,6 +203,47 @@ class ProductCubit extends Cubit<ProductState> {
         getCategoriesResponse: ApiResponse(status: ApiStatus.error, error: e.toString()),
       );
       emit(errorState);
+    }
+  }
+
+  void sortProducts(String field) {
+    final isAscending = state.sortField == field ? !state.sortAscending : true;
+    final sortedProducts = List<Product>.from(state.products)
+      ..sort((a, b) {
+        dynamic aValue = _getFieldValue(a, field);
+        dynamic bValue = _getFieldValue(b, field);
+        if (aValue is String && bValue is String) {
+          return isAscending ? aValue.compareTo(bValue) : bValue.compareTo(aValue);
+        } else if (aValue is num && bValue is num) {
+          return isAscending ? aValue.compareTo(bValue) : bValue.compareTo(aValue);
+        } else {
+          return 0;
+        }
+      });
+    final updatedState = state.copyWith(
+      products: sortedProducts,
+      sortField: field,
+      sortAscending: isAscending,
+    );
+    emit(updatedState);
+  }
+  void setResponse(){
+    emit(state.copyWith(updateProductResponse: ApiResponse(status: ApiStatus.initial), addProductResponse: ApiResponse(status: ApiStatus.initial)), );
+  }
+  dynamic _getFieldValue(Product product, String field) {
+    switch (field) {
+      case 'id':
+        return product.id;
+      case 'title':
+        return product.title;
+      case 'category':
+        return product.category;
+      case 'price':
+        return product.price;
+      case 'stock':
+        return product.stock;
+      default:
+        return product.id;
     }
   }
 }

@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'core/app_router.dart';
+import 'features/auth/presentation/blocs/auth_cubit.dart';
 import 'features/product/data/product_repository.dart';
 import 'features/product/domain/product_usecase.dart';
 import 'features/product/presentation/blocs/product_cubit.dart';
 import 'features/product/presentation/blocs/theme_cubit.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // await SharedPreferences.getInstance();
   runApp(const MyApp());
 }
 
@@ -18,6 +21,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(
+          create: (context) => AuthCubit(),
+        ),
         BlocProvider(
           create: (context) => ProductCubit(
             ProductUseCase(ProductRepositoryImpl()),

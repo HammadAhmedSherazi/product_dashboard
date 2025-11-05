@@ -43,6 +43,8 @@ class ProductState extends Equatable {
   final ApiResponse<void>? deleteProductResponse;
   final ApiResponse<List<String>>? getCategoriesResponse;
   final int skip;
+  final String? sortField;
+  final bool sortAscending;
 
   const ProductState({
     this.products = const [],
@@ -54,6 +56,8 @@ class ProductState extends Equatable {
     this.deleteProductResponse,
     this.getCategoriesResponse,
     this.skip = 0,
+    this.sortField,
+    this.sortAscending = true,
   });
 
   ProductState copyWith({
@@ -66,6 +70,8 @@ class ProductState extends Equatable {
     ApiResponse<void>? deleteProductResponse,
     ApiResponse<List<String>>? getCategoriesResponse,
     int? skip,
+    String? sortField,
+    bool? sortAscending,
   }) {
     return ProductState(
       products: products ?? this.products,
@@ -77,6 +83,8 @@ class ProductState extends Equatable {
       deleteProductResponse: deleteProductResponse ?? this.deleteProductResponse,
       getCategoriesResponse: getCategoriesResponse ?? this.getCategoriesResponse,
       skip: skip ?? this.skip,
+      sortField: sortField ?? this.sortField,
+      sortAscending: sortAscending ?? this.sortAscending,
     );
   }
 
@@ -91,5 +99,7 @@ class ProductState extends Equatable {
     deleteProductResponse,
     getCategoriesResponse,
     skip,
+    sortField,
+    sortAscending,
   ];
 }

@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import '../models/product.dart';
 
 abstract class ProductRepository {
-  Future<List<Product>> fetchProducts({int limit = 30, int skip = 0});
+  Future<List<Product>> fetchProducts({int limit = 30, int skip = 0, String? sortBy, String? order});
   Future<List<String>> fetchCategories();
   Future<List<Product>> fetchProductsByCategory(String category);
   Future<List<Product>> searchProducts(String query);
@@ -19,8 +19,12 @@ class ProductRepositoryImpl implements ProductRepository {
   final String baseUrl = 'https://dummyjson.com';
 
   @override
-  Future<List<Product>> fetchProducts({int limit = 30, int skip = 0}) async {
-    final response = await http.get(Uri.parse('$baseUrl/products?limit=$limit&skip=$skip'));
+  Future<List<Product>> fetchProducts({int limit = 30, int skip = 0, String? sortBy, String? order}) async {
+    String url = '$baseUrl/products?limit=$limit&skip=$skip';
+    if (sortBy != null && order != null) {
+      url += '&sortBy=$sortBy&order=$order';
+    }
+    final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       return (data['products'] as List).map((json) => Product.fromJson(json)).toList();

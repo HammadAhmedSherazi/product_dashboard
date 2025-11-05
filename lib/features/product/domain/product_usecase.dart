@@ -6,7 +6,7 @@ class ProductUseCase {
 
   ProductUseCase(this.repository);
 
-  Future<List<Product>> getProducts({int limit = 30, int skip = 0}) => repository.fetchProducts(limit: limit, skip: skip);
+  Future<List<Product>> getProducts({int limit = 30, int skip = 0, String? sortBy, String? order}) => repository.fetchProducts(limit: limit, skip: skip, sortBy: sortBy, order: order);
   Future<List<String>> getCategories() => repository.fetchCategories();
   Future<List<Product>> getProductsByCategory(String category) => repository.fetchProductsByCategory(category);
   Future<List<Product>> searchProducts(String query) => repository.searchProducts(query);

@@ -16,7 +16,7 @@ class DashboardPage extends StatelessWidget {
         builder: (context, constraints) {
           return Row(
             children: [
-              if (constraints.maxWidth > 600) const Sidebar(),
+              if (constraints.maxWidth > 800) const Sidebar(),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),

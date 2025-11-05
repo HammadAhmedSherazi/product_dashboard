@@ -22,6 +22,7 @@ class _AddEditProductModalState extends State<AddEditProductModal> {
   String? _selectedCategory;
   late TextEditingController _thumbnailController;
   late TextEditingController _imagesController;
+  late TextEditingController _stockController;
   bool _isInStock = true;
 
   @override
@@ -41,6 +42,9 @@ class _AddEditProductModalState extends State<AddEditProductModal> {
     _imagesController = TextEditingController(
       text: widget.product?.images.join(', ') ?? '',
     );
+    _stockController = TextEditingController(
+      text: widget.product?.stock.toString() ?? '10',
+    );
     _isInStock = widget.product?.isInStock ?? true;
     context.read<ProductCubit>().fetchCategories();
   }
@@ -52,6 +56,7 @@ class _AddEditProductModalState extends State<AddEditProductModal> {
     _priceController.dispose();
     _thumbnailController.dispose();
     _imagesController.dispose();
+    _stockController.dispose();
     super.dispose();
   }
 
@@ -65,6 +70,7 @@ class _AddEditProductModalState extends State<AddEditProductModal> {
         category: _selectedCategory ?? '',
         thumbnail: _thumbnailController.text,
         images: _imagesController.text.split(',').map((e) => e.trim()).toList(),
+        stock: int.parse(_stockController.text),
         isInStock: _isInStock,
       );
 
@@ -104,8 +110,9 @@ class _AddEditProductModalState extends State<AddEditProductModal> {
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value!.isEmpty) return 'Please enter a price';
-                  if (double.tryParse(value) == null)
+                  if (double.tryParse(value) == null) {
                     return 'Please enter a valid number';
+                  }
                   return null;
                 },
               ),
@@ -141,6 +148,16 @@ class _AddEditProductModalState extends State<AddEditProductModal> {
                   labelText: 'Images (comma separated URLs)',
                 ),
               ),
+              TextFormField(
+                controller: _stockController,
+                decoration: const InputDecoration(labelText: 'Stock'),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value!.isEmpty) return 'Please enter stock';
+                  if (int.tryParse(value) == null) return 'Please enter a valid number';
+                  return null;
+                },
+              ),
               SwitchListTile(
                 title: const Text('In Stock'),
                 value: _isInStock,
@@ -163,15 +180,18 @@ class _AddEditProductModalState extends State<AddEditProductModal> {
                 const SnackBar(content: Text('Product added successfully')),
               );
             } else if (state.addProductResponse?.status == ApiStatus.error) {
+              context.read<ProductCubit>().setResponse();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Error adding product: ${state.addProductResponse?.error}')),
               );
             } else if (state.updateProductResponse?.status == ApiStatus.success) {
+              context.read<ProductCubit>().setResponse();
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Product updated successfully')),
               );
             } else if (state.updateProductResponse?.status == ApiStatus.error) {
+              context.read<ProductCubit>().setResponse();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Error updating product: ${state.updateProductResponse?.error}')),
               );

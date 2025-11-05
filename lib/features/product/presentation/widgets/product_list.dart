@@ -320,16 +320,34 @@ class _ProductListState extends State<ProductList> {
                                     return null;
                                   },
                                 ),
-                                columns: const [
-                                  DataColumn(label: Text('ID', style: TextStyle(fontWeight: FontWeight.bold))),
-                                  DataColumn(label: Text('Name', style: TextStyle(fontWeight: FontWeight.bold))),
-                                  DataColumn(label: Text('Category', style: TextStyle(fontWeight: FontWeight.bold))),
-                                  DataColumn(label: Text('Price', style: TextStyle(fontWeight: FontWeight.bold))),
-                                  DataColumn(label: Text('Stock', style: TextStyle(fontWeight: FontWeight.bold))),
-                                  DataColumn(label: Text('Actions', style: TextStyle(fontWeight: FontWeight.bold))),
+                                columns: [
+                                  DataColumn(
+                                    label: const Text('ID', style: TextStyle(fontWeight: FontWeight.bold)),
+                                    onSort: (columnIndex, ascending) => context.read<ProductCubit>().sortProducts('id'),
+                                  ),
+                                  DataColumn(
+                                    label: const Text('Name', style: TextStyle(fontWeight: FontWeight.bold)),
+                                    onSort: (columnIndex, ascending) => context.read<ProductCubit>().sortProducts('title'),
+                                  ),
+                                  DataColumn(
+                                    label: const Text('Category', style: TextStyle(fontWeight: FontWeight.bold)),
+                                    onSort: (columnIndex, ascending) => context.read<ProductCubit>().sortProducts('category'),
+                                  ),
+                                  DataColumn(
+                                    label: const Text('Price', style: TextStyle(fontWeight: FontWeight.bold)),
+                                    onSort: (columnIndex, ascending) => context.read<ProductCubit>().sortProducts('price'),
+                                  ),
+                                  DataColumn(
+                                    label: const Text('Stock', style: TextStyle(fontWeight: FontWeight.bold)),
+                                    onSort: (columnIndex, ascending) => context.read<ProductCubit>().sortProducts('stock'),
+                                  ),
+                                  const DataColumn(label: Text('Actions', style: TextStyle(fontWeight: FontWeight.bold))),
                                 ],
+                                
                 rows: state.products.map((product) {
-                                  return DataRow(cells: [
+                                  return DataRow(
+                                    
+                                    cells: [
                                     DataCell(Text(product.id.toString())),
                                     DataCell(
                                       InkWell(
@@ -360,25 +378,7 @@ class _ProductListState extends State<ProductList> {
                                       ),
                                     ),
                                     DataCell(Text('\$${product.price}', style: const TextStyle(fontWeight: FontWeight.w500))),
-                                    DataCell(
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                        decoration: BoxDecoration(
-                                          color: product.isInStock
-                                              ? Colors.green.withValues(alpha:0.1)
-                                              : Colors.red.withValues(alpha:0.1),
-                                          borderRadius: BorderRadius.circular(12),
-                                        ),
-                                        child: Text(
-                                          product.isInStock ? 'In Stock' : 'Out of Stock',
-                                          style: TextStyle(
-                                            color: product.isInStock ? Colors.green : Colors.red,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                                    DataCell(Text(product.stock.toString())),
                                     DataCell(
                                       Row(
                                         children: [
@@ -403,6 +403,21 @@ class _ProductListState extends State<ProductList> {
                         ),
                       ),
               ),
+              // Load More Button
+              if (state.skip > 0)
+                Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Center(
+                    child: ElevatedButton(
+                      onPressed: state.getProductResponse?.status == ApiStatus.loadMore
+                          ? null
+                          : () => context.read<ProductCubit>().fetchProducts(limit: 10, skip: state.skip),
+                      child: state.getProductResponse?.status == ApiStatus.loadMore
+                          ? const CircularProgressIndicator()
+                          : const Text('Load More'),
+                    ),
+                  ),
+                ),
             ],
           );
         } else if (state.getProductResponse?.status == ApiStatus.error) {
@@ -421,54 +436,3 @@ class _ProductListState extends State<ProductList> {
   }
 }
 
-class ProductCard extends StatelessWidget {
-  final Product product;
-
-  const ProductCard({super.key, required this.product});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Image.network(
-              product.thumbnail,
-              width: 80,
-              height: 80,
-              fit: BoxFit.cover,
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    product.title,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  Text(product.description),
-                  Text('\$${product.price}'),
-                ],
-              ),
-            ),
-            IconButton(
-              icon: const Icon(Icons.edit),
-              onPressed: () {
-                // TODO: Implement edit functionality
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: () {
-                context.read<ProductCubit>().deleteProduct(product.id);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
