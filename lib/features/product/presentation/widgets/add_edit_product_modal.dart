@@ -113,6 +113,10 @@ class _AddEditProductModalState extends State<AddEditProductModal> {
                   if (double.tryParse(value) == null) {
                     return 'Please enter a valid number';
                   }
+                  final price = double.tryParse(value);
+                  if (price == null || price <= 0) {
+                    return 'Please enter a valid positive number';
+                  }
                   return null;
                 },
               ),
