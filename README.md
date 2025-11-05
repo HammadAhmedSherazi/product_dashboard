@@ -2,41 +2,6 @@
 
 A Flutter application for managing products with a dashboard interface. This app allows users to view, add, edit, and delete products, with features like infinite scrolling, search, filtering, and user authentication.
 
-## How to Run the Project
-
-### Prerequisites
-- Flutter SDK (version 3.0 or higher)
-- Dart SDK
-- Android Studio or VS Code with Flutter extensions
-- Git
-
-### Installation Steps
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/product-dashboard.git
-   cd product-dashboard
-   ```
-
-2. Install dependencies:
-   ```bash
-   flutter pub get
-   ```
-
-3. Run the app:
-   ```bash
-   flutter run
-   ```
-
-   For web:
-   ```bash
-   flutter run -d chrome
-   ```
-
-   For Android/iOS:
-   ```bash
-   flutter run -d android
-   flutter run -d ios
-   ```
 
 ## Folder Structure
 
@@ -153,19 +118,3 @@ lib/
 - Widget tests for UI components
 - Integration tests for complete flows
 
-## Deployment
-- Web deployment support
-- Mobile app builds for Android and iOS
-- CI/CD ready with GitHub Actions
-
-## Future Enhancements
-- Offline support with local database
-- Push notifications
-- Advanced filtering and sorting
-- Product categories management
-- User profiles and permissions
-- Analytics integration
-
----
-
-Built with ❤️ using Flutter
